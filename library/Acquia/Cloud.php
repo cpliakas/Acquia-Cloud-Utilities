@@ -7,17 +7,6 @@
 
 /**
  * Class that non-Drupal apps can use to get Acquia database credentials.
- *
- * It is recommended to place this script in the "library" directory at the top
- * level of the repository. Usage of this class is as as follows, where $account
- * is the Unix name of the Acquia Network account and $dbname is the name of the
- * database as created through the Acquia Netowrk interface:
- *
- * @code
- * require_once '../library/acquia_hosting.php';
- * $acquia = new AcquiaHosting($account);
- * $creds = $acquia->getActiveDatabaseCredentials($dbname);
- * @endcode
  */
 class Acquia_Cloud {
 
@@ -47,6 +36,8 @@ class Acquia_Cloud {
    *
    * @param $account
    *   The unix name of the account.
+   *
+   * @throws Exception
    */
   public function __construct($account) {
     $this->account = $account;
@@ -61,7 +52,7 @@ class Acquia_Cloud {
       $this->siteStage = file_get_contents($this->sitePhpDir . '/ah-site-stage');
     }
     else {
-      $this->returnErrorPage();
+      throw new Exception('Docuemnt root not found.');
     }
   }
 
@@ -100,11 +91,13 @@ class Acquia_Cloud {
    *   - pass: THe database password.
    *   - db: The name of the database.
    *   - id: The conection ID, or the value cached in DNS.
+   *
+   * @throws Exception
    */
   public function getActiveDatabaseCredentials($db_name) {
     // Gets all credentials for all available database servers.
     if (!$creds = $this->getAllDatabaseCredentials($db_name)) {
-      $this->returnErrorPage();
+      throw new Exception('Credentials root not found.');
     }
 
     // Captures URLs.
@@ -252,6 +245,8 @@ class Acquia_Cloud {
    *   - pass: THe database password.
    *   - db: The name of the database.
    *   - id: The conection ID, or the value cached in DNS.
+   *
+   * @throws Exception
    */
   public function getActiveServer(array $db_urls, $max_attempts = 3, $delay_factor = 500000) {
     $active_server = array();
@@ -294,7 +289,7 @@ class Acquia_Cloud {
     if (empty($active_server['id'])) {
       $message = "Failed to connect to any database servers for database {$db_info['name']}.";
       syslog(LOG_ERR, $message);
-      $this->returnErrorPage();
+      throw new Exception($message);
     }
 
     return $active_server;
@@ -311,24 +306,5 @@ class Acquia_Cloud {
   public function cacheActiveServer($cluster_id, $connected_id) {
     $update_cmd = "sudo -u dnsuser /usr/local/sbin/nsupdate.sh cluster-$cluster_id $connected_id";
     exec(escapeshellcmd($update_cmd));
-  }
-
-  /**
-   * Prints and returns a generic error page.
-   */
-  public function returnErrorPage() {
-    header($_SERVER['SERVER_PROTOCOL'] .' 500 Service unavailable');
-    echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-<title>Error</title>
-</head>
-<body>
-The website encountered an unexpected error. Please try again later.
-</body>
-</html>
-EOF;
-    exit;
   }
 }

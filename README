@@ -1,0 +1,15 @@
+
+Usage:
+
+// Registers the autoloader. 
+require_once '../library/Acquia/Loader.php';
+Acquia_Loader::register();
+
+try {
+  // Use the library components.
+  $acquia = new Acquia_Cloud($account);
+  $creds = $acquia->getActiveDatabaseCredentials($dbname);
+}
+catch (Exception $e) {
+  Acquia_Eror::page();
+}
