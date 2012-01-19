@@ -19,7 +19,7 @@
  * $creds = $acquia->getActiveDatabaseCredentials($dbname);
  * @endcode
  */
-class AcquiaCloud {
+class Acquia_Cloud {
 
   /**
    * The site name, i.e. "account", "accountstg", "accountdev".
