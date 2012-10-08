@@ -41,18 +41,35 @@ class Acquia_Cloud {
    */
   public function __construct($account) {
     $this->account = $account;
-
-    // Calculates site information.
-    if (isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT'])) {
+    // Identify the AH site and stage name:
+    // If this is a Drupal page request, use AH environment vars.
+    if (!empty($_SERVER['AH_SITE_GROUP']) && !empty($_SERVER['AH_SITE_ENVIRONMENT'])) {
+      $docroot = "/var/www/html/{$_SERVER['AH_SITE_GROUP']}.{$_SERVER['AH_SITE_ENVIRONMENT']}/docroot";
+    }
+    // This is probably redundant with the AH env vars, but is what we used to
+    // use and can't hurt.
+    elseif (!empty($_SERVER['DOCUMENT_ROOT'])) {
       $docroot = $_SERVER['DOCUMENT_ROOT'];
     }
-    if (isset($docroot) && preg_match('@/(?:var|mnt)/www/html/([a-z0-9_]+)/@i', $docroot, $m)) {
+    // If this is not a page request, not AH env vars or DOCUMENT_ROOT are
+    // available. Drush?
+    elseif (function_exists('drush_get_option')) {
+      $docroot = drush_get_option(array("r", "root"), $_SERVER['PWD']);
+    }
+    // Otherwise, perhaps we're a script within docroot but running on the
+    // command line (e.g. scripts/run-test.sh).
+    else {
+      $docroot = dirname(realpath($_SERVER['SCRIPT_FILENAME']));
+    }
+
+    // Set the site information.
+    if (isset($docroot) && preg_match('@/(?:var|mnt)/www/html/([a-z0-9_\.]+)/@i', $docroot, $m)) {
       $this->siteName = $m[1];
       $this->sitePhpDir = '/var/www/site-php/' . $this->siteName;
       $this->siteStage = file_get_contents($this->sitePhpDir . '/ah-site-stage');
     }
     else {
-      throw new Exception('Docuemnt root not found.');
+      throw new Exception('Document root not found.');
     }
   }
 
