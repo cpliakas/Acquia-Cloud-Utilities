@@ -52,7 +52,7 @@ class Acquia_Cloud {
       $this->siteStage = file_get_contents($this->sitePhpDir . '/ah-site-stage');
     }
     else {
-      throw new Exception('Docuemnt root not found.');
+      throw new Exception('Document root not found.');
     }
   }
 
