@@ -41,10 +41,13 @@ class Acquia_Cloud {
    */
   public function __construct($account) {
     $this->account = $account;
-
     // Calculates site information.
     if (isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT'])) {
       $docroot = $_SERVER['DOCUMENT_ROOT'];
+    }
+    else {
+      // Determine a docroot when $_SERVER is not set (CLI)
+      $docroot = dirname(__FILE__);
     }
     if (isset($docroot) && preg_match('@/(?:var|mnt)/www/html/([a-z0-9_]+)/@i', $docroot, $m)) {
       $this->siteName = $m[1];
@@ -52,7 +55,7 @@ class Acquia_Cloud {
       $this->siteStage = file_get_contents($this->sitePhpDir . '/ah-site-stage');
     }
     else {
-      throw new Exception('Docuemnt root not found.');
+      throw new Exception('Document root not found.');
     }
   }
 
