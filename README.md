@@ -1,7 +1,7 @@
 # Acquia Cloud Utilities
 
 NOTE: This repository is no longer maintained and will soon be deprecated
-by an upcoming hosting release that improves the mechanism to retrieving credentials.
+by an upcoming hosting release that improves the mechanism to retrieve credentials.
 
 
 ## Usage
