@@ -20,3 +20,7 @@ try {
     Acquia_Eror::page();
 }
 ```
+
+## Related Projects
+
+https://github.com/cpliakas/acquia-sdk-php
