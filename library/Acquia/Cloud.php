@@ -139,7 +139,7 @@ class Acquia_Cloud {
 
     // If the preferred database server changed, write this to the cache.
     if (empty($cached_id) || $cached_id != $active_server['id']) {
-      $this->cacheActiveServer($db_info['db_cluster_id'], $active_server['id']);
+      $this->cacheActiveServer($creds['db']['db_cluster_id'], $active_server['id']);
     }
 
     // Returns the server information.
