@@ -1,6 +1,6 @@
 # Acquia Cloud Utilities
 
-This repository is *deprecated* and no longer maintained.
+This repository is **deprecated** and no longer maintained.
 
 Please contact Acquia Support for assistance.
 
