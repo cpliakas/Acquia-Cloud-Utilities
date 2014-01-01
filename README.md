@@ -1,26 +1,9 @@
 # Acquia Cloud Utilities
 
-NOTE: This repository is no longer maintained and will soon be deprecated
-by an upcoming hosting release that improves the mechanism to retrieve credentials.
+This repository is *deprecated* and no longer maintained.
 
-
-## Usage
-
-```php
-
-// Registers the autoloader. 
-require_once '../library/Acquia/Loader.php';
-Acquia_Loader::register();
-
-try {
-    // Use the library components.
-    $acquia = new Acquia_Cloud($account);
-    $creds = $acquia->getActiveDatabaseCredentials($dbname);
-} catch (Exception $e) {
-    Acquia_Eror::page();
-}
-```
+Please contact Acquia Support for assistance.
 
 ## Related Projects
 
-https://github.com/cpliakas/acquia-sdk-php
+[Acquia SDK for PHP](https://github.com/acquia/acquia-sdk-php)
